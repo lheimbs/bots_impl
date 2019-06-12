@@ -56,7 +56,7 @@ def printStatus(fov, field, cmd):
         if i != fov:
             stdscr.addstr(i, 0, str(i) + ": " + line)
         else:
-            stdscr.addstr(line + {' '*10} + "Command: " + cmd)
+            stdscr.addstr(line + "  Command: " + cmd)
     stdscr.refresh()
     
 
