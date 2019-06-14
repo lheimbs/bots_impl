@@ -21,7 +21,7 @@ def main(host='172.19.199.52', port=60003):#port=63187
     #Bot()
     while True:
         try:
-            cmd = bot.work(f, turn)
+            cmd = bot.move_random(f)
 
             if cmd[0] == 'q':
                 break

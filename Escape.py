@@ -10,24 +10,24 @@ class BotEscape(Bot):
         self.stepper = 3
 
     def escape(self, turn):
-        target = super().find_target()
+        target = self.find_target(self.target_char)
         if target != (-1,-1):
-            if super().target == ():
+            if self.target == ():
                 super().target = target
             cmd = super().get_target(turn)
         else:
-            if turn % super().step_total == 0 and turn > super().field_size / 2:
+            if turn % self.step_total == 0 and turn > self.field_size / 2:
                 self.counter += 1
                 if self.stepper == 3:
                     if self.counter > 2:
                         self.stepper = 2
                         self.counter = 0
-                        self.step -= super().fov
+                        self.step -= self.fov
                 else:
                     if self.counter > 1:
                         self.counter = 0
-                        self.step -= super().fov
-                super().step_total += self.step
+                        self.step -= self.fov
+                self.step_total += self.step
                 if self.step > 0:
                     cmd = "<"
                 else:

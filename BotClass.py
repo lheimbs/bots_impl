@@ -25,6 +25,8 @@ class Bot():
         # counter: 
         self.counter = 0
         self.stepper = 3
+        # counter how many turns already waited
+        self.wait_turn = 0
         
     def work(self, f, turn):
         if self.viewer(f):
@@ -37,7 +39,7 @@ class Bot():
             return "q"
 
     def escape(self, turn):
-        target = self.find_target()
+        target = self.find_target(self.target_char)
         if target != (-1,-1):
             if self.target == ():
                 self.target = target
@@ -63,11 +65,11 @@ class Bot():
                 cmd = "^"
         return cmd
 
-    def find_target(self):
+    def find_target(self, target_char):
         for i, line in enumerate(self.view):
-            if self.target_char in line:
+            if target_char in line:
                 # (Spalte, Zeile)
-                pos = (line.find(self.target_char), i)
+                pos = (line.find(target_char), i)
                 break
             else:
                 pos = (-1,-1)
@@ -98,7 +100,14 @@ class Bot():
         return cmd
 
     def handle_enemy(self, turn):
-        pass
+        enemy_pos_left = self.find_target("<")
+        enemy_pos_right = self.find_target(">")
+        if enemy_pos_left == (2,1) or enemy_pos_right == (2,1):
+            self.wait_turn += 1
+            if self.wait_turn > 1:
+                return "^"
+            else:
+                return "g"
 
     def viewer(self, f):
         self.view = []
