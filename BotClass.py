@@ -12,7 +12,7 @@ class Bot():
 
         # vars to be calculated at runtime:
         self.view = []
-        self.fov = 2
+        self.fov = 5
 
         # vars for targeting [target_char]
         self.turned = False
@@ -108,6 +108,6 @@ class Bot():
             return True
 
     def init(self):
-        self.step = self.field_size - self.fov + 1
+        self.step = self.field_size - self.fov
         self.step_total = self.step
         self.pos = [int(self.fov/2), int(self.fov/2)]

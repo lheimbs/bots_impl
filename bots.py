@@ -5,7 +5,7 @@ import sys
 import socket
 from BotClass import Bot
 
-def main(host='192.168.1.201', port=63187):
+def main(host='172.19.199.52', port=60003):
     turn = 0
     s = socket.socket()
     s.connect((host, port))
