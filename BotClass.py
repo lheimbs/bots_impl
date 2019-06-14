@@ -20,7 +20,9 @@ class Bot():
         self.pos = [2,2]
 
         # vars for escape
+        # step: steps before turning
         self.step = 0
+        # counter: 
         self.counter = 0
         self.stepper = 3
         
@@ -64,11 +66,12 @@ class Bot():
     def find_target(self):
         for i, line in enumerate(self.view):
             if self.target_char in line:
-                cmd = (line.find(self.target_char), i)
+                # (Spalte, Zeile)
+                pos = (line.find(self.target_char), i)
                 break
             else:
-                cmd = (-1,-1)
-        return cmd    
+                pos = (-1,-1)
+        return pos    
 
     def get_target(self, turn):
         x_t, y_t = self.target
@@ -94,6 +97,9 @@ class Bot():
                         cmd= "^"
         return cmd
 
+    def handle_enemy(self, turn):
+        pass
+
     def viewer(self, f):
         self.view = []
         line = f.readline().strip("\n")
@@ -108,6 +114,6 @@ class Bot():
             return True
 
     def init(self):
-        self.step = self.field_size - self.fov
-        self.step_total = self.step
+        self.step = self.field_size - self.fov +1
+        self.step_total = self.step - 1
         self.pos = [int(self.fov/2), int(self.fov/2)]
