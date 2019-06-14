@@ -34,7 +34,7 @@ class Bot():
         else:
             return "q"
 
-    """ def escape(self, turn):
+    def escape(self, turn):
         target = self.find_target()
         if target != (-1,-1):
             if self.target == ():
@@ -59,7 +59,7 @@ class Bot():
                     cmd = "q"
             else:
                 cmd = "^"
-        return cmd """
+        return cmd
 
     def find_target(self):
         for i, line in enumerate(self.view):
