@@ -9,14 +9,14 @@ from Rumble import RumbleBot
 from Snake import SnakeBot
 from Horde import HordeBot
 from Boom import BoomBot
+from Escape import EscapeBot
 
-"""class Turn():
+class Turn():
     def __init__(self):
-        self.turn = 0"""
+        self.turn = [0]
 
 def main(host='172.19.199.52', port=63187):#port=63187
-    #turner = Turn()
-    turn = 0
+    turn = Turn()
     s = socket.socket()
     s.connect((host, port))
     f = s.makefile()
