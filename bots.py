@@ -6,23 +6,25 @@ import socket
 import traceback
 #from BotClass import Bot
 from Rumble import RumbleBot
+from Snake import SnakeBot
+from Horde import HordeBot
+from Boom import BoomBot
 
 """class Turn():
     def __init__(self):
         self.turn = 0"""
 
-def main(host='172.19.199.52', port=60003):#port=63187
+def main(host='172.19.199.52', port=63187):#port=63187
     #turner = Turn()
     turn = 0
     s = socket.socket()
     s.connect((host, port))
     f = s.makefile()
-    bot = RumbleBot()
-    #Bot()
+    #bot = RumbleBot()
+    bot = BoomBot()
     while True:
         try:
-            cmd = bot.work(f, turn)
-
+            cmd = bot.worker(f)
             if cmd[0] == 'q':
                 break
             else:

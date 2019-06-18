@@ -16,6 +16,7 @@ class Bot():
 
         # vars for targeting [target_char]
         self.turned = False
+        self.returned = 0
         self.target = ()
         self.pos = [2,2]
 
@@ -66,20 +67,26 @@ class Bot():
         return cmd
 
     def find_target(self, target_char):
+        targets = []
         for i, line in enumerate(self.view):
-            if target_char in line:
+            if target_char in line:# and i < 3:
                 # (Spalte, Zeile)
                 pos = (line.find(target_char), i)
-                break
-            else:
-                pos = (-1,-1)
-        return pos    
+                targets.append(pos)
+        return targets    
 
     def get_target(self, turn):
         x_t, y_t = self.target
+        print("Pos found: " + str(self.target))
         if x_t == self.pos[0]:
             print("target straight ahead")
             cmd = "^"
+        elif self.target in [(0,2), (1,2)]:
+            print("turn left")
+            cmd = "<"
+        elif self.target in [(3,2), (4,2)]:
+            print("turn right")
+            cmd = ">"    
         else:
             if y_t < self.pos[1]:
                 self.pos[1] -= 1
@@ -90,13 +97,20 @@ class Bot():
                     print("turn to target")
                     cmd = ">"
                     self.turned = True
-                else:
+                    """else:
                     if x_t < self.pos[0]:
                         print("target behind")
-                        cmd = "v"
+                        if self.returned < 2:
+                            cmd = "<"
+                            self.returned += 1
+                        else:
+                            cmd = "^"
+                            self.returned = 0
                     else:
                         print("target in front")
-                        cmd= "^"
+                        cmd= "^"""
+                else:
+                    cmd = "^"
         return cmd
 
     def handle_enemy(self, turn):
