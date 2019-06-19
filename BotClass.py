@@ -12,12 +12,12 @@ class Bot():
 
         # vars to be calculated at runtime:
         self.view = []
-        self.fov = 0
-        self.pos = [0,0]
+        self.fov = 2
 
         # vars for targeting [target_char]
         self.turned = False
         self.target = ()
+        self.pos = [2,2]
 
         # vars for escape
         self.step = 0
@@ -47,46 +47,13 @@ class Bot():
             if turn < 1:
                 self.init()
 
-            #print(self.view)
+            print(self.view)
             return self.escape(turn)
         else:
             return "q"
 
-    def find_target(self):
-        for i, line in enumerate(self.view):
-            if self.target_char in line:
-                cmd = (line.find(self.target_char), i)
-                break
-            else:
-                cmd = (-1,-1)
-        return cmd    
-
-    def get_target(self, turn):
-        x_t, y_t = self.target
-        if x_t == self.pos[0]:
-            print("target straight ahead")
-            cmd = "^"
-        else:
-            if y_t < self.pos[1]:
-                self.pos[1] -= 1
-                print("target above me")
-                cmd = "^"
-            else:
-                if not self.turned:
-                    print("turn to target")
-                    cmd = ">"
-                    self.turned = True
-                else:
-                    if x_t < self.pos[0]:
-                        print("target behind")
-                        cmd = "v"
-                    else:
-                        print("target in front")
-                        cmd= "^"
-        return cmd
-
     def escape(self, turn):
-        target = self.find_target()
+        target = self.find_target(self.target_char)
         if target != (-1,-1):
             if self.target == ():
                 self.target = target
@@ -111,3 +78,70 @@ class Bot():
             else:
                 cmd = "^"
         return cmd
+
+    def find_target(self, target_char):
+        targets = []
+        for i, line in enumerate(self.view):
+            if target_char in line:# and i < 3:
+                # (Spalte, Zeile)
+                pos = (line.find(target_char), i)
+                targets.append(pos)
+        return targets    
+
+    def get_target(self, turn):
+        x_t, y_t = self.target
+        if x_t == self.pos[0]:
+            print("target straight ahead")
+            cmd = "^"
+        elif self.target in [(0,2), (1,2)]:
+            print("turn left")
+            cmd = "<"
+        elif self.target in [(3,2), (4,2)]:
+            print("turn right")
+            cmd = ">"    
+        else:
+            if y_t < self.pos[1]:
+                self.pos[1] -= 1
+                print("target above me")
+                cmd = "^"
+            else:
+                if not self.turned:
+                    print("turn to target")
+                    cmd = ">"
+                    self.turned = True
+                else:
+                    if x_t < self.pos[0]:
+                        print("target behind")
+                        cmd = "v"
+                    else:
+                        print("target in front")
+                        cmd= "^"
+        return cmd
+
+    def handle_enemy(self, turn):
+        enemy_pos_left = self.find_target("<")
+        enemy_pos_right = self.find_target(">")
+        if enemy_pos_left == (2,1) or enemy_pos_right == (2,1):
+            self.wait_turn += 1
+            if self.wait_turn > 1:
+                return "^"
+            else:
+                return "g"
+
+    def viewer(self, f):
+        self.view = []
+        line = f.readline().strip("\n")
+        self.fov = len(line)
+        self.view.append(line)
+        for _ in range(0, self.fov-1):
+            line = f.readline().strip("\n")
+            self.view.append(line)
+        if self.view == ['']:
+            return False
+        else:
+            return True
+
+    def init(self):
+        self.step = self.field_size - self.fov +1
+        self.step_total = self.step - 1
+        self.pos = [int(self.fov/2), int(self.fov/2)]

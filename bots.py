@@ -3,44 +3,33 @@
 
 import sys
 import socket
-import argparse
-import curses
-import time
-from Escape import BotEscape
-from BotClass import Bot
+import traceback
+#from BotClass import Bot
+from Rumble import RumbleBot
+from Snake import SnakeBot
+from Horde import HordeBot
+from Boom import BoomBot
+from Escape import EscapeBot
 
-def main():
+def main(host='192.168.1.201', port=63187):
     turn = 0
-    server = getServer()
-
-    if server['mode'] == 'escape':
-        pass
-        #bot = BotEscape()
-    else:
-        print("Gamemode " + server["mode"] + " not recognised. Exiting...")
-
-
     s = socket.socket()
-    s.connect((server['host'], server['port']))
+    s.connect((host, port))
     f = s.makefile()
-
-
-
     bot = Bot()
     while True:
         try:
             cmd = bot.work(f, turn)
 
-            printStatus(bot.fov, bot.view, cmd)
             if cmd[0] == 'q':
                 break
             else:
                 s.send(bytearray(cmd[0], "utf-8") if cmd[0] != '\n' else b'^')
         except Exception as e:
             print(e)
+            traceback.print_exc()
             break
         turn += 1
-        time.sleep(.5)
     s.close()
 
 def getServer():

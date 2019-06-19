@@ -9,21 +9,11 @@ class BotEscape(Bot):
         self.counter = 0
         self.stepper = 3
 
-    def work(self, f, turn):
-        if self.viewer(f):
-            if turn < 1:
-                self.init()
-
-            #print(self.view)
-            return self.escape(turn)
-        else:
-            return "q"
-
     def escape(self, turn):
-        target = super().find_target()
+        target = self.find_target(self.target_char)
         if target != (-1,-1):
             if self.target == ():
-                self.target = target
+                super().target = target
             cmd = super().get_target(turn)
         else:
             if turn % self.step_total == 0 and turn > self.field_size / 2:
