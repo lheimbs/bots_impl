@@ -1,6 +1,6 @@
 from BotClass import Bot
 
-class BotEscape(Bot):
+class EscapeBot(Bot):
     """Gamemode Escape for Terrain parsing game 'bots' by marcusfisch: https://github.com/markusfisch/bots"""
 
     def __init__(self, target_char="o", enemy="^v<>", empty=".", field_size=32):

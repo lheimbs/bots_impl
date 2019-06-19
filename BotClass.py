@@ -12,23 +12,36 @@ class Bot():
 
         # vars to be calculated at runtime:
         self.view = []
-        self.fov = 5
+        self.fov = 2
 
         # vars for targeting [target_char]
         self.turned = False
-        self.returned = 0
         self.target = ()
         self.pos = [2,2]
 
         # vars for escape
-        # step: steps before turning
         self.step = 0
-        # counter: 
         self.counter = 0
         self.stepper = 3
-        # counter how many turns already waited
-        self.wait_turn = 0
-        
+
+    def init(self):
+        self.step = self.field_size - self.fov + 1
+        self.step_total = self.step
+        self.pos = [int(self.fov/2), int(self.fov/2)]
+
+    def viewer(self, f):
+        self.view = []
+        line = f.readline().strip("\n")
+        self.fov = len(line)
+        self.view.append(line)
+        for _ in range(0, self.fov-1):
+            line = f.readline().strip("\n")
+            self.view.append(line)
+        if self.view == ['']:
+            return False
+        else:
+            return True
+
     def work(self, f, turn):
         if self.viewer(f):
             if turn < 1:
@@ -77,7 +90,6 @@ class Bot():
 
     def get_target(self, turn):
         x_t, y_t = self.target
-        print("Pos found: " + str(self.target))
         if x_t == self.pos[0]:
             print("target straight ahead")
             cmd = "^"
@@ -97,46 +109,11 @@ class Bot():
                     print("turn to target")
                     cmd = ">"
                     self.turned = True
-                    """else:
+                else:
                     if x_t < self.pos[0]:
                         print("target behind")
-                        if self.returned < 2:
-                            cmd = "<"
-                            self.returned += 1
-                        else:
-                            cmd = "^"
-                            self.returned = 0
+                        cmd = "v"
                     else:
                         print("target in front")
-                        cmd= "^"""
-                else:
-                    cmd = "^"
+                        cmd= "^"
         return cmd
-
-    def handle_enemy(self, turn):
-        enemy_pos_left = self.find_target("<")
-        enemy_pos_right = self.find_target(">")
-        if enemy_pos_left == (2,1) or enemy_pos_right == (2,1):
-            self.wait_turn += 1
-            if self.wait_turn > 1:
-                return "^"
-            else:
-                return "g"
-
-    def viewer(self, f):
-        self.view = []
-        line = f.readline().strip("\n")
-        self.fov = len(line)
-        self.view.append(line)
-        for _ in range(0, self.fov-1):
-            line = f.readline().strip("\n")
-            self.view.append(line)
-        if self.view == ['']:
-            return False
-        else:
-            return True
-
-    def init(self):
-        self.step = self.field_size - self.fov +1
-        self.step_total = self.step - 1
-        self.pos = [int(self.fov/2), int(self.fov/2)]
