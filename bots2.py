@@ -1,15 +1,36 @@
 #!/usr/bin/env python
 
-import sys
-import socket
-import msvcrt
+import sys, socket, traceback
 
+def _find_getch():
+    try:
+        import termios
+    except ImportError:
+        # Non-POSIX. Return msvcrt's (Windows') getch.
+        import msvcrt
+        return msvcrt.getch().decode()
+
+    # POSIX system. Create and return a getch that manipulates the tty.
+    import sys, tty
+    def _getch():
+        fd = sys.stdin.fileno()
+        old_settings = termios.tcgetattr(fd)
+        try:
+            tty.setraw(fd)
+            ch = sys.stdin.read(1)
+        finally:
+            termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
+        return ch
+
+    return _getch
+
+getch = _find_getch()
 
 def read_view(f):
     view = f.readline()
     if not view:
         return
-    for x in range(2, len(view)):
+    for _ in range(2, len(view)):
         line = f.readline()
         if not line:
             return
@@ -17,7 +38,7 @@ def read_view(f):
     return view
 
 
-def main(host='172.19.199.52', port=60003):
+def main(host='192.168.1.205', port=63187):
     s = socket.socket()
     s.connect((host, port))
     f = s.makefile()
@@ -26,9 +47,11 @@ def main(host='172.19.199.52', port=60003):
             view = read_view(f)
             if not view:
                 break
+            
             sys.stdout.write(view + "Command (q<>^v): ")
-            #cmd = sys.stdin.readline()[0]
-            cmd = msvcrt.getch().decode()
+
+            cmd = getch()
+
             if cmd == 'w':
                 cmd = '^'
             elif cmd == 's':
@@ -46,6 +69,7 @@ def main(host='172.19.199.52', port=60003):
             s.send(cmd if sys.version_info[0] < 3 else str.encode(cmd))
         except Exception as e:
             print(e)
+            traceback.print_exc()
             break
     s.close()
 

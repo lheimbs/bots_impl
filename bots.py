@@ -1,9 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import sys
-import socket
-import traceback
+import sys, socket, traceback, argparse, curses
 #from BotClass import Bot
 from Rumble import RumbleBot
 from Snake import SnakeBot
@@ -16,7 +14,7 @@ def main(host='192.168.1.201', port=63187):
     s = socket.socket()
     s.connect((host, port))
     f = s.makefile()
-    bot = Bot()
+    bot = EscapeBot()
     while True:
         try:
             cmd = bot.work(f, turn)
