@@ -2,8 +2,10 @@ class Mixin:
     def training(self):
         #----Training Game Mode----
         import training
-        if not self.get_view():
-            return 'q'
+        if self.turn_counter != 0:
+            if not self.get_view():
+                return 'q'
+        self.turn_counter += 1
         cmd = training.getch()
 
         if cmd == 'w':

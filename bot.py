@@ -3,7 +3,7 @@
 
 import sys, socket, traceback, argparse
 import numpy as np
-from curses import wrapper
+import curses
 
 # my packages
 import _Bot
@@ -21,6 +21,7 @@ class Game(_Bot.Mixin):
 
         # view specific variables
         self.view = None
+        self.get_view()
 
         # count every turn from connecting to server
         self.turn_counter = 0
@@ -75,14 +76,21 @@ def main(stdscr):
     except:
         port = args.port
 
+    curses.curs_set(0)
+    stdscr.addstr(0,0, "Connecting...")
+    stdscr.refresh()
+
     with Game(host, port) as game:
-        map = Map(32,5)
+        map = Map(20,5)
+        command = ""
         while True:
-            # Call [mode]-method of bot
-            command = getattr(Game, mode)(game)
 
             map.update(game.view, command)
             map.print(stdscr, "Game " + mode[0].upper() + mode[1:])
+
+            # Call [mode]-method of bot
+            command = getattr(Game, mode)(game)
+
             
             if command == "q":
                 break
@@ -90,4 +98,4 @@ def main(stdscr):
             
 
 if __name__ == '__main__':
-    wrapper(main)
+    curses.wrapper(main)
