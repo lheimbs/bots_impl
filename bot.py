@@ -81,12 +81,12 @@ def main(stdscr):
     stdscr.refresh()
 
     with Game(host, port) as game:
-        map = Map(20,5)
+        map = Map(stdscr, 20,9)
         command = ""
         while True:
-
-            map.update(game.view, command)
-            map.print(stdscr, "Game " + mode[0].upper() + mode[1:])
+            stdscr.clear()
+            map.update(game.view, command, game.turn_counter)
+            map.print("Game " + mode[0].upper() + mode[1:])
 
             # Call [mode]-method of bot
             command = getattr(Game, mode)(game)
