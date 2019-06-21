@@ -5,8 +5,8 @@ class Map():
         self._size = size
         self._fov = fov
         self._map = numpy.zeros((size,size), dtype='<U1')
-        self._view_x = 0 #TODO
-        self._view_y = 0 #TODO
+        self._view_x = (size-fov, size) #TODO
+        self._view_y = (size-fov, size) #TODO
 
     def update(self, view, orientation):
         view = self.rotate_view(view, orientation)
