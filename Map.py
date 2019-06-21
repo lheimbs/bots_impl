@@ -1,100 +1,154 @@
 import numpy
 
+""" TODO: rotation der map fixen
+    TODO: map out of bounds weiter führen
+    TODO: logstring wieder entfernen
+"""
+
 class Map():
-    def __init__(self, size, fov):
+    def __init__(self, screen, size, fov):
+        self.screen = screen
         self._size = size
         self._fov = fov
         self._map = numpy.zeros((size,size), dtype='<U1')
         self._map = numpy.char.replace(self._map, "", "-")
-        #self._view_x =  #TODO
-        #self._view_y = [size-fov, size] #TODO
         self._orientation = self.Orientation()
         self._coords = self.Coordinates(size, fov)
+        self.old_view = None
 
-    def update(self, view, last_command):
+        self.logstring = ""
+
+
+    def update(self, view, last_command, turn):
         #view = self.rotate_view(view, last_command)
+        if self.old_view is not None and numpy.array_equal(view, self.old_view):
+            self.logstring += "same view; "
+            # same view as before; and check if way is blocked -> no movement
+            # or way is free -> map just has not changed (empty map or sth)
+            if  self.is_hit_obstacle(view) and last_command in "^v":
+                self.logstring += "hit obstacle; "
+                return
+
+        self.old_view = view
 
         if last_command == "<":
+            self.logstring += "last cmd <; ori: " + self._orientation.ori + "; "
             # going forwards
             self._orientation.turn_west()
+            self.view = self.rotate_west(view)
         elif last_command == ">":
+            self.logstring += "last cmd >; ori: " + self._orientation.ori + "; "
             self._orientation.turn_east()
+            self.view = self.rotate_east(view)
         
         elif last_command == "^":
+            self.logstring += "last cmd ^; "
             if self._orientation.ori == "north":
+                self.logstring += "move north; "
                 self._coords.move_north()
             elif self._orientation.ori == "south":
+                self.logstring += "move south; "
                 self._coords.move_south()
             elif self._orientation.ori == "west":
+                self.logstring += "move west; "
                 self._coords.move_west()
             elif self._orientation.ori == "east":
+                self.logstring += "move east; "
                 self._coords.move_east()
 
             self._map[self._coords.get_rows(), self._coords.get_cols()] = view
 
         elif last_command == "v":
+            self.logstring += "last cmd v; "
             if self._orientation.ori == "north":
+                self.logstring += "move south; "
                 self._coords.move_south()
             elif self._orientation.ori == "south":
+                self.logstring += "move north; "
                 self._coords.move_north()
             elif self._orientation.ori == "west":
+                self.logstring += "move east; "
                 self._coords.move_east()
             elif self._orientation.ori == "east":
+                self.logstring += "move west; "
                 self._coords.move_west()
 
             self._map[self._coords.get_rows(), self._coords.get_cols()] = view
-    
-    def rotate_view(self, view, orientation):
-        if orientation == "<":
-            # rotate 270° array anti-clockwise once and turn the other paylers characters as well:
-            # > to ^
-            # ^ to <
-            # < to v
-            # v to >
-            view = numpy.rot90(view, 3)
-            view = numpy.char.replace(view, '>', 'a')
-            view = numpy.char.replace(view, '^', 'b')
-            view = numpy.char.replace(view, 'v', 'c')
-            view = numpy.char.replace(view, '<', 'd')
-            view = numpy.char.replace(view, 'a', '^')
-            view = numpy.char.replace(view, 'b', '<')
-            view = numpy.char.replace(view, 'c', '>')
-            view = numpy.char.replace(view, 'd', 'v')
-        elif orientation == ">":
-            # rotate 90° array anti-clockwise once and turn the other paylers characters as well:
-            # > to v
-            # ^ to >
-            # < to ^
-            # v to <
-            view = numpy.rot90(view, 1)
-            view = numpy.char.replace(view, '<', 'a')
-            view = numpy.char.replace(view, 'v', 'b')
-            view = numpy.char.replace(view, '>', 'c')
-            view = numpy.char.replace(view, '^', 'd')
-            view = numpy.char.replace(view, 'a', '^')
-            view = numpy.char.replace(view, 'b', '<')
-            view = numpy.char.replace(view, 'c', 'v')
-            view = numpy.char.replace(view, 'd', '>')
+        
+        if turn == 0:
+            self.logstring += "init show map; "
+            self._map[self._coords.get_rows(), self._coords.get_cols()] = view
+
+    def rotate_west(self, view):
+        self.logstring += "rotate west; "
+        # rotate 270° array anti-clockwise once and turn the other paylers characters as well:
+        # > to ^
+        # ^ to <
+        # < to v
+        # v to >
+        view = numpy.rot90(view, 3)
+        view = numpy.char.replace(view, '>', 'a')
+        view = numpy.char.replace(view, '^', 'b')
+        view = numpy.char.replace(view, 'v', 'c')
+        view = numpy.char.replace(view, '<', 'd')
+        view = numpy.char.replace(view, 'a', '^')
+        view = numpy.char.replace(view, 'b', '<')
+        view = numpy.char.replace(view, 'c', '>')
+        view = numpy.char.replace(view, 'd', 'v')
         return view
 
-    def print(self, screen, title):
-        x = 2
-        screen.clear()
+    def rotate_east(self, view):
+        self.logstring += "rotate east; "
+        # rotate 90° array anti-clockwise once and turn the other paylers characters as well:
+        # > to v
+        # ^ to >
+        # < to ^
+        # v to <
+        view = numpy.rot90(view, 1)
+        view = numpy.char.replace(view, '<', 'a')
+        view = numpy.char.replace(view, 'v', 'b')
+        view = numpy.char.replace(view, '>', 'c')
+        view = numpy.char.replace(view, '^', 'd')
+        view = numpy.char.replace(view, 'a', '^')
+        view = numpy.char.replace(view, 'b', '<')
+        view = numpy.char.replace(view, 'c', 'v')
+        view = numpy.char.replace(view, 'd', '>')
+        return view
+
+    def is_hit_obstacle(self, view, player_collision = False):
+        obstacle = "#~X"
+        if player_collision:
+            obstacle += "^v<>"
+
+        if view[int(self._fov/2)-1, int(self._fov/2)] in obstacle:
+            return True
+        elif view[int(self._fov/2)+1, int(self._fov/2)] in obstacle:
+            return True
+        else:
+            return False
+
+    def print(self, title):
+        x = 3
+        #self.screen.clear()
         #height, width = screen.getmaxyx()
-        screen.addstr(0, 5, title)
+        self.screen.addstr(0, 5, title)
+        self.screen.addstr(1, 0, self.logstring)
+        self.logstring = ""
         
         rows, cols = self._map.shape
-        screen.addstr(1, 0, "_" * cols+2*"_")
-        screen.addstr(rows+x, 0, "‾" * cols+2*"‾")
+        try:
+            self.screen.addstr(2, 0, "_" * cols+2*"_")
+            self.screen.addstr(rows+x, 0, "‾" * cols+2*"‾")
+        except: pass
         for row in range(rows):
             try: 
-                screen.addstr(row+x, 0, "|")
-                screen.addstr(row+x, cols+1, "|")
+                self.screen.addstr(row+x, 0, "|")
+                self.screen.addstr(row+x, cols+1, "|")
             except: pass
             for col in range(cols):
-                try: screen.addstr(row+x, col+1, self._map[row, col])
+                try: self.screen.addstr(row+x, col+1, self._map[row, col])
                 except: pass
-        screen.refresh()
+        self.screen.refresh()
 
     class Coordinates():
         def __init__(self, size, fov):
