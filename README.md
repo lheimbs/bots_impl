@@ -1,7 +1,7 @@
 # bots_impl
 Implementation of my bot for the bots coding night at kurzdigital 2018. 
 The Game can be found [here](https://github.com/markusfisch/bots).
-A visual representation for the game is located [here](http://bots.cdietze.de/)
+A visual representation for the game is located [here](http://bots.cdietze.de/).
 
 ---
 
