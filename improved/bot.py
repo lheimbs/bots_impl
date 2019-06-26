@@ -81,7 +81,7 @@ def main(stdscr):
     stdscr.refresh()
 
     with Game(host, port) as game:
-        map = Map(stdscr, 20,9)
+        map = Map(stdscr, 32,5)
         command = ""
         while True:
             stdscr.clear()
