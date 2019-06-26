@@ -62,8 +62,10 @@ def parse_auguments():
 
     ap = argparse.ArgumentParser()
     ap.add_argument('mode', nargs=1, default="escape", choices=game_modes, metavar="MODE", help="Game mode")
-    ap.add_argument('host', nargs=1, default="localhost", metavar="HOST", help="Host to connect to.")
+    ap.add_argument('host', default="localhost", metavar="HOST", help="Host to connect to.")
     ap.add_argument('port', nargs='?', type=int, default=63187,metavar="PORT", help="Port of server to connect to.")
+    ap.add_argument('-s', '--size', dest='size', type=int, default=32, metavar="MAPSIZE", help="Mapsize of playingfiles on server.")
+    ap.add_argument('-v', '--view', dest='fov', type=int, default=5, metavar='FOV', help='Size of Matrix the bot recieves from server.')
     return ap.parse_args()
 
 def main(stdscr):
@@ -71,17 +73,16 @@ def main(stdscr):
     
     host = args.host[0]
     mode = args.mode[0]
-    try:
-        port = args.port[0]
-    except:
-        port = args.port
+    port = args.port
+    size = args.size
+    fov  = args.fov
 
     curses.curs_set(0)
     stdscr.addstr(0,0, "Connecting...")
     stdscr.refresh()
 
     with Game(host, port) as game:
-        map = Map(stdscr, 20,9)
+        map = Map(stdscr, size, fov)
         command = ""
         while True:
             stdscr.clear()
