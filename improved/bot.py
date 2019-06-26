@@ -57,7 +57,7 @@ class Game(_Bot.Mixin):
         self.s.close()
 
 
-def parse_auguments():
+def parse_arguments():
     game_modes=["escape", "horde", "boom", "rumble", "training", "collect", "snakes", "avoid", "word"]
 
     ap = argparse.ArgumentParser()
@@ -67,7 +67,8 @@ def parse_auguments():
     return ap.parse_args()
 
 def main(stdscr):
-    args = parse_auguments()
+    
+    args = parse_arguments()
     
     host = args.host[0]
     mode = args.mode[0]
@@ -98,4 +99,5 @@ def main(stdscr):
             
 
 if __name__ == '__main__':
+    print("Hello")
     curses.wrapper(main)
