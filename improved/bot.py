@@ -82,10 +82,7 @@ def main(stdscr):
     stdscr.refresh()
 
     with Game(host, port) as game:
-<<<<<<< HEAD
         map = Map(stdscr, size, fov)
-=======
->>>>>>> 08da15892e0071eda39f854a875402cdefc6d8d0
         command = ""
         while True:
             stdscr.clear()
