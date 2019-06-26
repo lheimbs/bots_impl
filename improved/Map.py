@@ -18,9 +18,29 @@ class Map():
 
         self.logstring = ""
 
+    def debug_view(self, current_view):
+        # current view:
+        rows, cols = current_view.shape
+        y = 2+self._fov+3
+        x = self._size + 5
+        self.screen.addstr(y, x, "Current View:")
+        for row in range(rows):
+            for col in range(cols):
+                try: self.screen.addstr(row+y+1, col+1+x, current_view[row, col])
+                except: pass
+        if self.old_view is not None:
+            rows, cols = self.old_view.shape
+            y = 2
+            x = self._size + 5
+            self.screen.addstr(y, x, "Old View:")
+            for row in range(rows):
+                for col in range(cols):
+                    try: self.screen.addstr(row+y+1, col+1+x, self.old_view[row, col])
+                    except: pass
 
     def update(self, view, last_command, turn):
         #view = self.rotate_view(view, last_command)
+        self.debug_view(view)
         if self.old_view is not None and numpy.array_equal(view, self.old_view):
             self.logstring += "same view; "
             # same view as before; and check if way is blocked -> no movement
