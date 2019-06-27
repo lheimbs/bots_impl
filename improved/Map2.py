@@ -41,8 +41,8 @@ class Map():
         if self._orientation == "north":
             return True
         elif self._orientation == "west":
-            view = numpy.ro90(view, 1)
-            
+            view = numpy.rot90(view, 1)
+
         return
 
     def move_forward(self):
