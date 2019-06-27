@@ -15,18 +15,18 @@ class Map():
         self._orientation = self.Orientation()
         self._coords = self.Coordinates(size, fov)
         self.old_view = None
-
+        self.current_view = None
         self.logstring = ""
 
-    def debug_view(self, current_view):
+    def debug_view(self, view):
         # current view:
-        rows, cols = current_view.shape
+        rows, cols = view.shape
         y = 2+self._fov+3
         x = self._size + 5
         self.screen.addstr(y, x, "Current View:")
         for row in range(rows):
             for col in range(cols):
-                try: self.screen.addstr(row+y+1, col+1+x, current_view[row, col])
+                try: self.screen.addstr(row+y+1, col+1+x, view[row, col])
                 except: pass
         if self.old_view is not None:
             rows, cols = self.old_view.shape
@@ -39,8 +39,8 @@ class Map():
                     except: pass
 
     def update(self, view, last_command, turn):
-        #view = self.rotate_view(view, last_command)
         self.debug_view(view)
+
         if self.old_view is not None and numpy.array_equal(view, self.old_view):
             self.logstring += "same view; "
             # same view as before; and check if way is blocked -> no movement
@@ -109,12 +109,14 @@ class Map():
         view = numpy.rot90(view, 3)
         view = numpy.char.replace(view, '>', 'a')
         view = numpy.char.replace(view, '^', 'b')
-        view = numpy.char.replace(view, 'v', 'c')
-        view = numpy.char.replace(view, '<', 'd')
+        view = numpy.char.replace(view, 'v', 'd')
+        view = numpy.char.replace(view, '<', 'e')
         view = numpy.char.replace(view, 'a', '^')
         view = numpy.char.replace(view, 'b', '<')
-        view = numpy.char.replace(view, 'c', '>')
-        view = numpy.char.replace(view, 'd', 'v')
+        view = numpy.char.replace(view, 'd', '>')
+        view = numpy.char.replace(view, 'e', 'v')
+
+        view = numpy.char.replace(view, 'A', 'c')
         return view
 
     def rotate_east(self, view):
