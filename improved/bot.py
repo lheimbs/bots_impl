@@ -20,7 +20,6 @@ def parse_arguments():
     return ap.parse_args()
 
 def main(stdscr):
-    print("Hallo")
     args = parse_arguments()
     
     host = args.host[0]
