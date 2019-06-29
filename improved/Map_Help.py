@@ -6,6 +6,11 @@ class Coordinates():
     def move_north(self):
         self.rows = [x-1 for x in self.rows]
 
+        # check if coords are outside of the map-array
+        #if self.rows[0] < 0:
+            # out of map at top
+
+
     def move_south(self):
         self.rows = [x+1 for x in self.rows]
 
@@ -14,6 +19,8 @@ class Coordinates():
 
     def move_east(self):
         self.cols = [y+1 for y in self.cols]
+
+        #
 
     def get_rows(self):
         return slice(self.rows[0], self.rows[1])
