@@ -43,18 +43,53 @@ class Map():
             pass
         elif self.orientation.ori == "west":
             view = self.rotate_west(view)
+        elif self.orientation.ori == "south":
+            view = self.rotate_south(view)
+        elif self.orientation.ori == "east":
+            view = self.rotate_east(view)
+        return view
+
+    def rotate_south(self, view):
+        view = numpy.rot90(view, 2) #rotate 180°
+        
+        """view = numpy.char.replace(view, '>', 'a')
+        view = numpy.char.replace(view, '^', 'b')
+        view = numpy.char.replace(view, 'v', 'd')
+        view = numpy.char.replace(view, '<', 'e')
+        view = numpy.char.replace(view, 'a', '>')
+        view = numpy.char.replace(view, 'b', 'v')
+        view = numpy.char.replace(view, 'd', '^')
+        view = numpy.char.replace(view, 'e', '<')"""
+
+        view = numpy.char.replace(view, 'A', '∀')
+        return view
+
+    def rotate_east(self, view):
+        view = numpy.rot90(view, 3) #rotate 180°
+        
+        """view = numpy.char.replace(view, '>', 'a')
+        view = numpy.char.replace(view, '^', 'b')
+        view = numpy.char.replace(view, 'v', 'd')
+        view = numpy.char.replace(view, '<', 'e')
+        view = numpy.char.replace(view, 'a', 'v')
+        view = numpy.char.replace(view, 'b', '>')
+        view = numpy.char.replace(view, 'd', '<')
+        view = numpy.char.replace(view, 'e', '^')"""
+
+        view = numpy.char.replace(view, 'A', 'ɔ')
         return view
 
     def rotate_west(self, view):
-        view = numpy.rot90(view, 1)
-        view = numpy.char.replace(view, '>', 'a')
+        view = numpy.rot90(view, 1) #rotate 90° anti-clockwise
+        
+        """view = numpy.char.replace(view, '>', 'a')
         view = numpy.char.replace(view, '^', 'b')
         view = numpy.char.replace(view, 'v', 'd')
         view = numpy.char.replace(view, '<', 'e')
         view = numpy.char.replace(view, 'a', '^')
         view = numpy.char.replace(view, 'b', '<')
         view = numpy.char.replace(view, 'd', '>')
-        view = numpy.char.replace(view, 'e', 'v')
+        view = numpy.char.replace(view, 'e', 'v')"""
 
         view = numpy.char.replace(view, 'A', 'c')
         return view
@@ -86,6 +121,10 @@ class Map():
 
 
     def debug_view(self, rotated_view):
+        #debug string
+        self._screen.addstr(1,1, "Orientation: %s Coordinates: [%d %d] : [%d %d]" % 
+        (self.orientation.ori, self.coords.rows[0], self.coords.rows[1], self.coords.cols[0], self.coords.cols[1]))
+
         # old view up top
         if self._old_view is not None:
             rows, cols = self._old_view.shape
