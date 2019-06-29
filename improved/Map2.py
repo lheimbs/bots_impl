@@ -36,6 +36,7 @@ class Map():
             
         self.debug_view(view)
         self._old_view = self._current_view  
+        self._map[self.coords.get_rows(), self.coords.get_cols()] = view
         return False
 
     def rotate_map(self, view):
@@ -95,25 +96,25 @@ class Map():
         return view
 
     def move_forward(self):
-        if self.orientation == "north":
+        if self.orientation.ori == "north":
             self.coords.move_north()
-        elif self.orientation == "west":
+        elif self.orientation.ori == "west":
             self.coords.move_west()
-        elif self.orientation == "south":
+        elif self.orientation.ori == "south":
             self.coords.move_south()
-        elif self.orientation == "east":
+        elif self.orientation.ori == "east":
             self.coords.move_east()
         else:
             pass
 
     def move_backward(self):
-        if self.orientation == "north":
+        if self.orientation.ori == "north":
             self.coords.move_south()
-        elif self.orientation == "west":
+        elif self.orientation.ori == "west":
             self.coords.move_east()
-        elif self.orientation == "south":
+        elif self.orientation.ori == "south":
             self.coords.move_north()
-        elif self.orientation == "east":
+        elif self.orientation.ori == "east":
             self.coords.move_west()
         else:
             pass
