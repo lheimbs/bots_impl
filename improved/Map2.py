@@ -36,7 +36,9 @@ class Map():
             
         self.debug_view(view)
         self._old_view = self._current_view  
-        self._map[self.coords.get_rows(), self.coords.get_cols()] = view
+        slice_x = self.coords.get_rows()
+        slice_y = self.coords.get_cols()
+        self._map[slice_x, slice_y] = view
         return False
 
     def rotate_map(self, view):
@@ -123,8 +125,8 @@ class Map():
 
     def debug_view(self, rotated_view):
         #debug string
-        self._screen.addstr(1,1, "Orientation: %s Coordinates: [%d %d] : [%d %d]" % 
-        (self.orientation.ori, self.coords.rows[0], self.coords.rows[1], self.coords.cols[0], self.coords.cols[1]))
+        self._screen.addstr(1,1, "Orientation: %s Coordinate: %d : %d" % 
+        (self.orientation.ori, self.coords._x, self.coords._y))
 
         # old view up top
         if self._old_view is not None:
