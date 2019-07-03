@@ -1,41 +1,31 @@
-import curses, numpy
-"""
-def display_matrix(screen, m):
-    rows, cols = m.shape
-    for row in range(rows):
-        for col in range(cols):
-            screen.addstr(row, col, "%s" % m[row, col])
+import numpy
 
-screen = curses.initscr()
-display_matrix(screen, b)
-screen.refresh()"""
+x = -2
+y = -3
 
+fov = 5
+size = 12
 
-view = "...........^.............>..............A..........v.....................<......."
-size = 20
-fov = 9
-a = numpy.array(list(view)).reshape(9,9)
-b = numpy.zeros((size,size), dtype='<U1')
-#b = numpy.char.replace(b, '', '-')
-#print(b)
-b[size-fov:size, size-fov:size] = a
+map = numpy.zeros((size, size))
+view = numpy.ones((fov, fov))
 
+# slices map
+smxa=slice(0,fov+x) #0,2
+smxb=slice(size+x, size) #9,12
 
+smya=slice(0,fov+y) #0,2
+smyb=slice(size+y, size) #9,12
 
-from curses import wrapper
+# slices view
+svxa=slice(x*-1,fov) #3,5
+svxb=slice(0, x*-1) #0,3
 
-def main(stdscr):
-    # Clear screen
-    stdscr.clear()
-    stdscr.addstr(0,0, str(stdscr.getmaxyx()))
-    # This raises ZeroDivisionError when i == 10.
-    rows, cols = b.shape
-    for row in range(rows):
-        for col in range(cols):
-            try: stdscr.addstr(row+1, col, "%s" % b[row, col])
-            except: pass
+svya=slice(y*-1,fov) #3,5
+svyb=slice(0, y*-1) #0,3
 
-    stdscr.refresh()
-    stdscr.getkey()
+map[smxa, smya] = view[svxa, svya] #schwarz
+map[smxa, smyb] = view[svxa, svyb] #rot
+map[smxb, smyb] = view[svxb, svyb] #blau
+map[smxb, smya] = view[svxb, svya] #grün
 
-wrapper(main)
+print(map)
