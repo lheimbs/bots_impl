@@ -2,7 +2,7 @@ import numpy
 import Map_Help
 
 class Map():
-    def __init__(self, screen, size, fov):
+    def __init__(self, screen, size, fov, player_collision=False):
         self._screen = screen
         self._size = size
         self._fov = fov
@@ -12,6 +12,7 @@ class Map():
         self._current_view = None
         self.orientation = Map_Help.Orientation()
         self.coords = Map_Help.Coordinates(size, fov)
+        self.player_collision = player_collision
 
     def update(self, view, command, turn):
         self._current_view = view
@@ -23,10 +24,10 @@ class Map():
         elif command == '>':
             # change orientation: rotate clockwise
             self.orientation.turn_east()
-        elif command == '^':
+        elif command == '^' and not self.is_hit_obstacle(view):
             # move one step forward in current direction
             self.move_forward()
-        elif command == 'v':
+        elif command == 'v' and not self.is_hit_obstacle(view):
             # move one step backwards in current direction
             self.move_backward()
         else:
@@ -36,9 +37,7 @@ class Map():
             
         self.debug_view(view)
         self._old_view = self._current_view  
-        slice_x = self.coords.get_rows()
-        slice_y = self.coords.get_cols()
-        self._map[slice_x, slice_y] = view
+        self._map = self.coords.set_map(view, self._map)
         return False
 
     def rotate_map(self, view):
@@ -54,46 +53,16 @@ class Map():
 
     def rotate_south(self, view):
         view = numpy.rot90(view, 2) #rotate 180°
-        
-        """view = numpy.char.replace(view, '>', 'a')
-        view = numpy.char.replace(view, '^', 'b')
-        view = numpy.char.replace(view, 'v', 'd')
-        view = numpy.char.replace(view, '<', 'e')
-        view = numpy.char.replace(view, 'a', '>')
-        view = numpy.char.replace(view, 'b', 'v')
-        view = numpy.char.replace(view, 'd', '^')
-        view = numpy.char.replace(view, 'e', '<')"""
-
         view = numpy.char.replace(view, 'A', '∀')
         return view
 
     def rotate_east(self, view):
         view = numpy.rot90(view, 3) #rotate 180°
-        
-        """view = numpy.char.replace(view, '>', 'a')
-        view = numpy.char.replace(view, '^', 'b')
-        view = numpy.char.replace(view, 'v', 'd')
-        view = numpy.char.replace(view, '<', 'e')
-        view = numpy.char.replace(view, 'a', 'v')
-        view = numpy.char.replace(view, 'b', '>')
-        view = numpy.char.replace(view, 'd', '<')
-        view = numpy.char.replace(view, 'e', '^')"""
-
         view = numpy.char.replace(view, 'A', 'ɔ')
         return view
 
     def rotate_west(self, view):
         view = numpy.rot90(view, 1) #rotate 90° anti-clockwise
-        
-        """view = numpy.char.replace(view, '>', 'a')
-        view = numpy.char.replace(view, '^', 'b')
-        view = numpy.char.replace(view, 'v', 'd')
-        view = numpy.char.replace(view, '<', 'e')
-        view = numpy.char.replace(view, 'a', '^')
-        view = numpy.char.replace(view, 'b', '<')
-        view = numpy.char.replace(view, 'd', '>')
-        view = numpy.char.replace(view, 'e', 'v')"""
-
         view = numpy.char.replace(view, 'A', 'c')
         return view
 
@@ -121,7 +90,17 @@ class Map():
         else:
             pass
 
+    def is_hit_obstacle(self, view):
+        obstacle = "#~X"
+        if self.player_collision:
+            obstacle += "^v<>"
 
+        if view[int(self._fov/2)-1, int(self._fov/2)] in obstacle:
+            return True
+        elif view[int(self._fov/2)+1, int(self._fov/2)] in obstacle:
+            return True
+        else:
+            return False
 
     def debug_view(self, rotated_view):
         #debug string
