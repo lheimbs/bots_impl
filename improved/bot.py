@@ -5,7 +5,7 @@ import sys, argparse
 import curses
 
 # my packages
-from Map2 import Map
+from Map import Map
 from Game import Game
 
 def parse_arguments():
