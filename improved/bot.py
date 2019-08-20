@@ -44,10 +44,15 @@ def main(stdscr):
                 # Call [mode]-method of bot
                 command = getattr(Game, mode)(game)
 
+                # incase player wants to quit prematurely
                 if command == "q":
                     break
 
                 game.send_command(command)
+            else:
+                # server sent empty view means game is over
+                game.send_command('q')
+                break
             
 
 if __name__ == '__main__':

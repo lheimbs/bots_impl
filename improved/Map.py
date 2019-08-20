@@ -13,6 +13,9 @@ class Map():
         self.orientation = Map_Help.Orientation()
         self.coords = Map_Help.Coordinates(size, fov)
         self.player_collision = player_collision
+        self._obstacle = "#~X"
+        self._enemyobstacle = "<>^v"
+
 
     def update(self, view, command, turn):
         self._current_view = view
@@ -91,14 +94,26 @@ class Map():
             pass
 
     def is_hit_obstacle(self, view, command):
-        obstacle = "#~X"
+        obstacle = self._obstacle
         if self.player_collision:
-            obstacle += "^v<>"
+            obstacle += self._enemyobstacle
 
         if self._old_view[int(self._fov/2)-1, int(self._fov/2)] in obstacle and command == '^':
             # is obstacle in front
             return True
         elif self._old_view[int(self._fov/2)+1, int(self._fov/2)] in obstacle and command == 'v':
+            # is obstacle underneath
+            return True
+        else:
+            return False
+    
+    def is_found_finish(self, command):
+        finish = self._finish
+
+        if self._old_view[int(self._fov/2)-1, int(self._fov/2)] in finish and command == '^':
+            # is obstacle in front
+            return True
+        elif self._old_view[int(self._fov/2)+1, int(self._fov/2)] in finish and command == 'v':
             # is obstacle underneath
             return True
         else:
