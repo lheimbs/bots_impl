@@ -1,4 +1,10 @@
-import _Bot, socket, numpy as np, traceback
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+import _Bot
+import socket
+import numpy as np
+import traceback
 
 class Game(_Bot.Mixin):
     """ Class which implements the bots parsing game bot

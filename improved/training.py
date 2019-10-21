@@ -7,7 +7,9 @@ def _find_getch():
         return msvcrt.getch
 
     # POSIX system. Create and return a getch that manipulates the tty.
-    import sys, tty
+    import sys
+    import tty
+    
     def _getch():
         fd = sys.stdin.fileno()
         old_settings = termios.tcgetattr(fd)
