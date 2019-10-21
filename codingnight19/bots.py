@@ -9,7 +9,7 @@ from Horde import HordeBot
 from Boom import BoomBot
 from Escape import EscapeBot
 
-def main(host='192.168.1.201', port=63187):
+def main(host='localhost', port=63187):
     turn = 0
     s = socket.socket()
     s.connect((host, port))
