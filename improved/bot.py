@@ -64,11 +64,13 @@ def main(stdscr, args):
                 # server sent empty view means game is over
                 game.send_command('q')
                 break
-            
+
 
 if __name__ == '__main__':
     arg = parse_arguments()
-    if not arg.map:
+    main(None, arg)
+    """if not arg.map:
         curses.wrapper(main, arg)
     else:
         main(None, arg)
+    """
