@@ -1,10 +1,10 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-import _Bot
 import socket
-import numpy as np
 import traceback
+import numpy as np
+import _Bot
 
 class Game(_Bot.Mixin):
     """ Class which implements the bots parsing game bot
@@ -12,9 +12,9 @@ class Game(_Bot.Mixin):
     """
     def __init__(self, host, port):
         # connect to server
-        self.s = socket.socket()
-        self.s.connect((host, port))
-        self.f = self.s.makefile()
+        self._socket = socket.socket()
+        self._socket.connect((host, port))
+        self.f = self._socket.makefile()
 
         # view specific variables
         self.view = None
@@ -43,7 +43,7 @@ class Game(_Bot.Mixin):
 
     def send_command(self, command):
         try:
-            self.s.send(bytearray(command[0], "utf-8") if command[0] != '\n' else b'^')
+            self._socket.send(bytearray(command[0], "utf-8") if command[0] != '\n' else b'^')
             return True
         except Exception as e:
             print(e)
@@ -51,4 +51,4 @@ class Game(_Bot.Mixin):
             return False
     
     def __exit__(self, exc_type, exc_value, traceback):
-        self.s.close()
+        self._socket.close()

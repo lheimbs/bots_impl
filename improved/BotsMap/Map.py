@@ -2,19 +2,20 @@
 # -*- coding: utf-8 -*-
 
 import numpy
-import Map_Help
+from . import Orientation
+from . import Coordinates
 
-class Map():
+class BotsMap():
     def __init__(self, screen, size, fov, player_collision=False):
         self._screen = screen
         self._size = size
         self._fov = fov
-        self._map = numpy.zeros((size,size), dtype='<U1')
+        self._map = numpy.zeros((size, size), dtype='<U1')
         self._map = numpy.char.replace(self._map, "", "-")
         self._old_view = None
         self._current_view = None
-        self.orientation = Map_Help.Orientation()
-        self.coords = Map_Help.Coordinates(size, fov)
+        self.orientation = Orientation.Orientation()
+        self.coords = Coordinates.Coordinates(size, fov)
         self.player_collision = player_collision
         self._obstacle = "#~X"
         self._enemyobstacle = "<>^v"
