@@ -21,7 +21,7 @@ class Configuration():
     def __init__(self, mode):
         """ Set all default settings """
         self.config = {
-            "map-size": [32, 32],   
+            "map-size": [32, 32] if mode != 'training' else [5, 5],
             "map-type": "plain",
             "custom-map": False,
             "obstacles": self.get_obstacles(mode),
@@ -39,3 +39,5 @@ class Configuration():
             obstacles = "#~X"
         elif mode == "escape":
             obstacles = "#~X"
+        # ...
+        return obstacles
