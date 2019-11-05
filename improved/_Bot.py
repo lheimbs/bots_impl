@@ -1,4 +1,5 @@
 class Mixin:
+    turn_counter = 0
     def training(self):
         #----Training Game Mode----
         import training

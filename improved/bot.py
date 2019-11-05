@@ -6,7 +6,7 @@ import argparse
 import curses
 
 # my packages
-from Map import Map
+from BotsMap.Map import BotsMap
 from Game import Game
 
 def parse_arguments():
@@ -42,7 +42,7 @@ def main(stdscr, args):
 
     with Game(host, port) as game:
         if stdscr:
-            gameMap = Map(stdscr, size, fov)
+            gameMap = BotsMap(stdscr, size, fov)
         command = ""
         while True:
             if stdscr:
@@ -68,7 +68,8 @@ def main(stdscr, args):
 
 if __name__ == '__main__':
     arg = parse_arguments()
-    main(None, arg)
+    #main(None, arg)
+    curses.wrapper(main, arg)
     """if not arg.map:
         curses.wrapper(main, arg)
     else:
