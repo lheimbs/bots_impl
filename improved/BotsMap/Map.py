@@ -20,6 +20,12 @@ class BotsMap():
         self._obstacle = "#~X"
         self._enemyobstacle = "<>^v"
 
+    """def set_obstacle(self, obstacle=""):
+        if obstacle:
+            self._obstacle = obstacle
+        else:
+    """
+
 
     def update(self, view, command, turn):
         self._current_view = view
