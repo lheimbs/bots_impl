@@ -42,7 +42,7 @@ def main(stdscr, args):
 
     with Game(host, port) as game:
         if stdscr:
-            gameMap = BotsMap(stdscr, size, fov)
+            gameMap = BotsMap(stdscr, size, fov, mode)
         command = ""
         while True:
             if stdscr:

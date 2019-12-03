@@ -4,11 +4,13 @@
 import numpy
 from . import Orientation
 from . import Coordinates
+from . import Configuration
 
 class BotsMap():
-    def __init__(self, screen, size, fov, player_collision=False):
+    def __init__(self, screen, size, fov, mode, player_collision=False):
+        self.config_holder = Configuration.Configuration(mode)
         self._screen = screen
-        self._size = size
+        #self.config_holder.config['map-size'] = size
         self._fov = fov
         self._map = numpy.zeros((size, size), dtype='<U1')
         self._map = numpy.char.replace(self._map, "", "-")
@@ -138,7 +140,7 @@ class BotsMap():
         if self._old_view is not None:
             rows, cols = self._old_view.shape
             y = 2
-            x = self._size + 5
+            x = self.config_holder.config['map-size'][0] + 5
             self._screen.addstr(y, x, "Old View:")
             for row in range(rows):
                 for col in range(cols):
@@ -148,7 +150,7 @@ class BotsMap():
         # current view recieved from server middle
         rows, cols = self._current_view.shape
         y = 2
-        x = self._size + 2*5 + self._fov
+        x = self.config_holder.config['map-size'][0] + 2*5 + self._fov
         self._screen.addstr(y, x, "Current View:")
         for row in range(rows):
             for col in range(cols):
@@ -159,7 +161,7 @@ class BotsMap():
         if rotated_view is not None:
             rows, cols = rotated_view.shape
         y = 2
-        x = self._size + 3*5 + 2*self._fov
+        x = self.config_holder.config['map-size'][0] + 3*5 + 2*self._fov
         self._screen.addstr(y, x, "Rotated View:")
         for row in range(rows):
             for col in range(cols):
